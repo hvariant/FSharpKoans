@@ -1,5 +1,7 @@
 ﻿namespace FSharpKoans
 open FSharpKoans.Core
+open System
+open System.Globalization
 
 //---------------------------------------------------------------
 // Apply Your Knowledge!
@@ -53,6 +55,23 @@ module ``about the stock example`` =
           "2012-03-02,32.31,32.44,32.00,32.08,47314200,32.08";
           "2012-03-01,31.93,32.39,31.85,32.29,77344100,32.29";
           "2012-02-29,31.89,32.00,31.61,31.74,59323600,31.74"; ]
+
+    let splitCommas (x:string) =
+        x.Split([|','|])
+
+
+    let parseLine (line:string) =
+        splitCommas line
+
+    let getDayDiff (dayData: string[]) =
+        let parseFloat s = Double.Parse(s, CultureInfo.InvariantCulture)
+        let first = parseFloat dayData.[1]
+        let last = parseFloat (Seq.last dayData)
+        abs (first - last)
+
+    let stockDataDays = List.map parseLine stockData.Tail
+    let maxDiffDayData = Seq.maxBy getDayDiff stockDataDays
+    let maxDiffDay = Seq.head maxDiffDayData
     
     // Feel free to add extra [<Koan>] members here to write
     // tests for yourself along the way. You can also try 
@@ -60,6 +79,6 @@ module ``about the stock example`` =
 
     [<Koan>]
     let YouGotTheAnswerCorrect() =
-        let result =  __
+        let result = maxDiffDay
         
         AssertEquality "2012-03-13" result
